@@ -9,23 +9,28 @@ namespace AndroidSample
 {
     public class AblyService : IObservable<LogMessage>, IObservable<string>, ILoggerSink
     {
-        private AblyRealtime _ably;
+        public AblyRealtime Ably { get; private set; }
         private readonly ISubject<LogMessage> _logSubject = new Subject<LogMessage>();
         private readonly ISubject<string> _connectionSubject = new Subject<string>();
 
-        public void Init()
+        public string ClientId { get; set; }
+        public void Init(string clientId)
         {
-            _ably = new AblyRealtime(new ClientOptions("lNj80Q.iGyVcQ:2QKX7FFASfX-7H9H")
+            ClientId = clientId;
+
+            Ably = new AblyRealtime(new ClientOptions("lNj80Q.iGyVcQ:2QKX7FFASfX-7H9H")
             {
                 LogHander = this,
-                LogLevel = LogLevel.Debug, 
+                LogLevel = LogLevel.Debug,
                 AutoConnect = false,
-                UseBinaryProtocol = false
+                UseBinaryProtocol = false,
+                ClientId = clientId,
+                EchoMessages = false
             });
-            _ably.Connection.On(change =>
+            Ably.Connection.On(change =>
             {
                 if(change.Current == ConnectionState.Connected)
-                    foreach(var channel in _ably.Channels)
+                    foreach(var channel in Ably.Channels)
                         channel.Attach();
 
                 _connectionSubject.OnNext(change.Current.ToString());
@@ -34,21 +39,31 @@ namespace AndroidSample
 
         public void Connect()
         {
-            _ably.Connect();
+            Ably.Connect();
+        }
+
+        public void Close()
+        {
+            Ably.Close();
         }
 
         public void SendMessage(string channel, string name, string value)
         {
-            _ably.Channels.Get(channel).Publish(name, value);
+            Ably.Channels.Get(channel).Publish(name, value);
+        }
+
+        public void SendMessage<T>(string channel, string name, T value) where T : class
+        {
+            Ably.Channels.Get(channel).Publish(name, value);
         }
 
         public IObservable<Message> SubsrcibeToChannel(string channelName)
         {
             var subject = new Subject<Message>();
-            _ably.Channels.Get(channelName).Subscribe(subject.OnNext);
+            Ably.Channels.Get(channelName).Subscribe(subject.OnNext);
             return subject;
         }
-             
+
         public void LogEvent(LogLevel level, string message)
         {
             Android.Util.Log.Debug("ably", $"[{level}] {message}");
@@ -66,6 +81,6 @@ namespace AndroidSample
         }
     }
 
-    
+
 
 }

@@ -65,6 +65,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimulateDisconnects", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReEnterPresenceClassic", "TestHelpers\ReEnterPresenceClassic\ReEnterPresenceClassic.csproj", "{155F7F33-466C-4825-972D-F652D29ED6ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestObserver", "TestHelpers\TestObserver\TestObserver.csproj", "{D5B88851-9B81-44E8-B8BB-17D9198A2E47}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		IO.Ably.Tests.Shared\IO.Ably.Tests.Shared.projitems*{1609f12c-8216-4e7c-ade0-240bfe160242}*SharedItemsImports = 13
@@ -287,6 +289,8 @@ Global
 		{155F7F33-466C-4825-972D-F652D29ED6ED}.Release|x64.Build.0 = Release|Any CPU
 		{155F7F33-466C-4825-972D-F652D29ED6ED}.Release|x86.ActiveCfg = Release|Any CPU
 		{155F7F33-466C-4825-972D-F652D29ED6ED}.Release|x86.Build.0 = Release|Any CPU
+		{D5B88851-9B81-44E8-B8BB-17D9198A2E47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5B88851-9B81-44E8-B8BB-17D9198A2E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

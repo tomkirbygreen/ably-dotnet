@@ -16,8 +16,6 @@ namespace IO.Ably.Tests.NETFramework.Realtime
 {
     public class RealtimeWorkflowSpecs : AblyRealtimeSpecs
     {
-
-
         public class GeneralSpecs : AblyRealtimeSpecs
         {
             [Fact]

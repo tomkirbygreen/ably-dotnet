@@ -9,10 +9,12 @@
     <ContentPage.Content>
         <StackLayout>
             <Button x:Name="Start" Text="Start" Command="{Binding StartCommand}"></Button>
-            <Button x:Name="Stop" Text="Send Message" Command="{Binding SendMessageCommand}" ></Button>
+            <Button x:Name="Stop" Text="Stop" Command="{Binding StopCommand}"></Button>
+            <Button x:Name="SendMessage" Text="Send Message" Command="{Binding SendMessageCommand}" ></Button>
             <Label Text="{Binding ConnectionStatus}"></Label>
-            <Label Text="{Binding CurrentCar}"></Label>
             <Label Text="{Binding Info}"></Label>
+            <Label Text="{Binding SentMessage}"></Label>
+            <Label Text="{Binding ReceivedMessage}"></Label>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
