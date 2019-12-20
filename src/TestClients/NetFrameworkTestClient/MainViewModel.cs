@@ -1,30 +1,16 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Windows.Input;
 using IO.Ably;
 using Newtonsoft.Json.Linq;
-using Xamarin.Forms;
 
-namespace AndroidSample
+namespace NetFrameworkTestClient
 {
-    public class PingPongPayload
-    {
-        public int Counter { get; set; }
-        public override string ToString()
-        {
-            return "Counter: " + Counter;
-        }
-    }
-
-    public class TestInfoPayload
-    {
-        public string Name { get; set; }
-        public string Action { get; set; }
-        public string Channel { get; set; }
-        public string Reason { get; set; }
-    }
-
-    public class MainViewModel : ObservableObject
+    public class MainViewModel
     {
         private readonly AblyService _ably;
         private string _connectionStatus = "Initialised";
@@ -36,16 +22,8 @@ namespace AndroidSample
         public MainViewModel(AblyService ably)
         {
             _ably = ably;
-            SendMessageCommand = new Command(() =>
-            {
-                _ably.SendMessage("test", "test", "Martin");
-            });
-            StartCommand = new Command(() =>
-            {
-                _ably.Connect();
-            });
+            _ably.Connect();
 
-            StopCommand = new Command(() =>  _ably.Close());
             var messageObserver = Observer.Create<Message>(m =>
             {
                 ReceivedMessage = "Received: " + m.ToString();
@@ -76,10 +54,13 @@ namespace AndroidSample
                 ReceivedMessage = m.ToString();
             });
 
-            ably.SubsrcibeToChannel("test").Subscribe(messageObserver);
-            ably.SubsrcibeToChannel("gameroom").Subscribe(messageObserver);
+            ably.SubsrcibeToChannel("test")
+                .Subscribe(messageObserver);
+            ably.SubsrcibeToChannel("gameroom")
+                .Subscribe(messageObserver);
             ably.Ably.Channels.Get("gameroom").Presence.Enter();
-            ably.SubsrcibeToChannel(ably.ClientId).Subscribe(testObserver);
+            ably.SubsrcibeToChannel(ably.ClientId)
+                .Subscribe(testObserver);
         }
 
         private void StopPingPongTest(TestInfoPayload payload)
@@ -108,30 +89,22 @@ namespace AndroidSample
 
         public string ConnectionStatus
         {
-            get => _connectionStatus;
-            set => SetProperty(ref _connectionStatus, value);
+            set => Console.WriteLine("Connection: " + value);
         }
 
         public string Info
         {
-            get => _info;
-            set => SetProperty(ref _info, value);
+            set { Console.WriteLine("Info: " + value); }
         }
 
         public string SentMessage
         {
-            get => _sentMessage;
-            set => SetProperty(ref _sentMessage, value);
+            set => Console.WriteLine("Sent: " + value);
         }
 
         public string ReceivedMessage
         {
-            get => _receivedMessage;
-            set => SetProperty(ref _receivedMessage, value);
+            set => Console.WriteLine("Received: " + value);
         }
-
-        public Command SendMessageCommand { get; }
-        public Command StartCommand { get; }
-        public Command StopCommand { get; }
     }
 }

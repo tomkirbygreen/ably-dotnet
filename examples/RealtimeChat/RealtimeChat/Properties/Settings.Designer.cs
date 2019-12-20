@@ -25,7 +25,7 @@ namespace RealtimeChat.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("lNj80Q.iGyVcQ:2QKX7FFASfX-7H9H")]
         public string ApiKey {
             get {
                 return ((string)(this["ApiKey"]));
@@ -37,7 +37,7 @@ namespace RealtimeChat.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Martin")]
         public string ClientId {
             get {
                 return ((string)(this["ClientId"]));

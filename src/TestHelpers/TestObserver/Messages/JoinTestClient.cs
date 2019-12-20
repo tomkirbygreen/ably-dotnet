@@ -26,11 +26,13 @@ namespace TestObserver.Messages
     {
         public string Name { get; }
         public object Data { get; }
+        public string Channel { get; }
 
-        public SendMessage(string name, object data)
+        public SendMessage(string name, object data, string channel = null)
         {
             Name = name;
             Data = data;
+            Channel = channel;
         }
     }
 
@@ -77,5 +79,10 @@ namespace TestObserver.Messages
 
     public class PingPongTimeOut
     {
+    }
+
+    public class SendNextPingMessage
+    {
+
     }
 }

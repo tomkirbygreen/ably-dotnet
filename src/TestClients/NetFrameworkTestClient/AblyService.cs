@@ -1,12 +1,12 @@
-﻿using System;
-using System.Reactive;
+using System;
+using System.Diagnostics;
 using System.Reactive.Subjects;
-using System.Threading;
 using IO.Ably;
 using IO.Ably.Realtime;
 
-namespace AndroidSample
+namespace NetFrameworkTestClient
 {
+
     public class LogMessage
     {
         public string Level { get; set; }
@@ -22,6 +22,7 @@ namespace AndroidSample
     public class AblyService : IObservable<LogMessage>, IObservable<string>, ILoggerSink
     {
         public AblyRealtime Ably { get; private set; }
+        private string ApiKey { get; }
         private readonly ISubject<LogMessage> _logSubject = new Subject<LogMessage>();
         private readonly ISubject<string> _connectionSubject = new Subject<string>();
 
@@ -30,7 +31,7 @@ namespace AndroidSample
         {
             ClientId = clientId;
 
-            Ably = new AblyRealtime(new ClientOptions("lNj80Q.iGyVcQ:2QKX7FFASfX-7H9H")
+            Ably = new AblyRealtime(new ClientOptions(ApiKey)
             {
                 LogHander = this,
                 LogLevel = LogLevel.Debug,
@@ -78,21 +79,23 @@ namespace AndroidSample
 
         public void LogEvent(LogLevel level, string message)
         {
-            Android.Util.Log.Debug("ably", $"[{level}] {message}");
+            Debug.WriteLine("ably", $"[{level}] {message}");
             _logSubject.OnNext(new LogMessage(message, level.ToString()));
         }
 
         public IDisposable Subscribe(IObserver<LogMessage> observer)
         {
-            return _logSubject.Subscribe(observer.NotifyOn(SynchronizationContext.Current));
+            return _logSubject.Subscribe(observer);
         }
 
         public IDisposable Subscribe(IObserver<string> observer)
         {
-            return _connectionSubject.Subscribe(observer.NotifyOn(SynchronizationContext.Current));
+            return _connectionSubject.Subscribe(observer);
+        }
+
+        public AblyService(string apiKey)
+        {
+            ApiKey = apiKey;
         }
     }
-
-
-
 }

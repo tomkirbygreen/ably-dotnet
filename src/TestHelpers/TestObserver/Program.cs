@@ -39,7 +39,8 @@ namespace TestObserver
                 LogHander = new SerilogSink(null),
                 LogLevel = LogLevel.Debug,
                 AutoConnect = false,
-                UseBinaryProtocol = false
+                UseBinaryProtocol = false,
+                EchoMessages = false
             });
 
             Ably.Connection.On(change =>

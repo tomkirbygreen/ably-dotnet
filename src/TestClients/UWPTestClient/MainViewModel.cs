@@ -1,29 +1,15 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading;
+using System.Windows.Input;
 using IO.Ably;
 using Newtonsoft.Json.Linq;
-using Xamarin.Forms;
 
-namespace AndroidSample
+namespace UWPTestClient
 {
-    public class PingPongPayload
-    {
-        public int Counter { get; set; }
-        public override string ToString()
-        {
-            return "Counter: " + Counter;
-        }
-    }
-
-    public class TestInfoPayload
-    {
-        public string Name { get; set; }
-        public string Action { get; set; }
-        public string Channel { get; set; }
-        public string Reason { get; set; }
-    }
-
     public class MainViewModel : ObservableObject
     {
         private readonly AblyService _ably;
@@ -36,19 +22,25 @@ namespace AndroidSample
         public MainViewModel(AblyService ably)
         {
             _ably = ably;
-            SendMessageCommand = new Command(() =>
+            SendMessageCommand = new RelayCommand(() =>
             {
                 _ably.SendMessage("test", "test", "Martin");
             });
-            StartCommand = new Command(() =>
+            StartCommand = new RelayCommand(() =>
             {
                 _ably.Connect();
             });
 
-            StopCommand = new Command(() =>  _ably.Close());
+            StopCommand = new RelayCommand(() =>  _ably.Close());
             var messageObserver = Observer.Create<Message>(m =>
             {
                 ReceivedMessage = "Received: " + m.ToString();
+            });
+
+            var logObserver = Observer.Create<LogMessage>(logMessage =>
+            {
+                _logList.Add(logMessage);
+                LogList = _logList.Count > 100 ? _logList.Skip(_logList.Count - 100).ToList() : _logList;
             });
 
             var testObserver = Observer.Create<Message>(m =>
@@ -76,10 +68,14 @@ namespace AndroidSample
                 ReceivedMessage = m.ToString();
             });
 
-            ably.SubsrcibeToChannel("test").Subscribe(messageObserver);
-            ably.SubsrcibeToChannel("gameroom").Subscribe(messageObserver);
+            ably.SubsrcibeToChannel("test")
+                .Subscribe(messageObserver.NotifyOn(SynchronizationContext.Current));
+            ably.SubsrcibeToChannel("gameroom")
+                .Subscribe(messageObserver.NotifyOn(SynchronizationContext.Current));
             ably.Ably.Channels.Get("gameroom").Presence.Enter();
-            ably.SubsrcibeToChannel(ably.ClientId).Subscribe(testObserver);
+            ably.SubsrcibeToChannel(ably.ClientId)
+                .Subscribe(testObserver.NotifyOn(SynchronizationContext.Current));
+            ably.Subscribe(logObserver);
         }
 
         private void StopPingPongTest(TestInfoPayload payload)
@@ -101,7 +97,7 @@ namespace AndroidSample
             _pingPongSubscription = _ably.SubsrcibeToChannel(testInfo.Channel)
                 .Where(x => x.Name == "PingPong" && x.Data is JObject)
                 .Select(x => ((JObject)x.Data).ToObject<PingPongPayload>())
-                .Subscribe(observer);
+                .Subscribe(observer.NotifyOn(SynchronizationContext.Current));
 
             _ably.SendMessage(testInfo.Channel, "Start", "test");
         }
@@ -118,6 +114,13 @@ namespace AndroidSample
             set => SetProperty(ref _info, value);
         }
 
+        private List<LogMessage> _logList = new List<LogMessage>();
+        public List<LogMessage> LogList
+        {
+            get => _logList;
+            set => SetProperty(ref _logList, value);
+        }
+
         public string SentMessage
         {
             get => _sentMessage;
@@ -130,8 +133,8 @@ namespace AndroidSample
             set => SetProperty(ref _receivedMessage, value);
         }
 
-        public Command SendMessageCommand { get; }
-        public Command StartCommand { get; }
-        public Command StopCommand { get; }
+        public ICommand SendMessageCommand { get; }
+        public ICommand StartCommand { get; }
+        public ICommand StopCommand { get; }
     }
 }
