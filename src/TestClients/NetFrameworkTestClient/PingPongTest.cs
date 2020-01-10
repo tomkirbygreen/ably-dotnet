@@ -1,4 +1,4 @@
-namespace UWPTestClient
+namespace NetFrameworkTestClient
 {
     public class PingPongPayload
     {

@@ -5,9 +5,11 @@
     xmlns:local="using:UWPTestClient"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+  <controls:TabView>
+    <controls:TabViewItem Header="Home">
       <StackPanel>
         <Button x:Name="Start" Content="Start" Command="{Binding StartCommand}"></Button>
         <Button x:Name="Stop" Content="Stop" Command="{Binding StopCommand}"></Button>
@@ -17,4 +19,15 @@
         <TextBlock Text="{Binding SentMessage}"></TextBlock>
         <TextBlock Text="{Binding ReceivedMessage}"></TextBlock>
       </StackPanel>
+    </controls:TabViewItem>
+    <controls:TabViewItem Header="Log">
+      <ListBox ItemsSource="{Binding LogList}">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Message}"></TextBlock>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </controls:TabViewItem>
+  </controls:TabView>
 </Page>

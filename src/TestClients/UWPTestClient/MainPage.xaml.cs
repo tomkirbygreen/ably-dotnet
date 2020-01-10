@@ -22,7 +22,7 @@ namespace UWPTestClient
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private static string clientId = "Android-" + Guid.NewGuid().ToString().Split("-")[0];
+        private static string clientId = "UWP-" + Guid.NewGuid().ToString().Split("-")[0];
 
         private readonly MainViewModel viewModel;
         private readonly AblyService ably;

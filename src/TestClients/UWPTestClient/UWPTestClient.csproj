@@ -99,6 +99,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainViewModel.cs" />
     <Compile Include="ObservableObject.cs" />
     <Compile Include="PingPongTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -133,6 +134,9 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.1.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
+      <Version>6.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Reactive.Linq">
       <Version>4.3.1</Version>
