@@ -10,6 +10,10 @@ namespace AndroidSample
     public class PingPongPayload
     {
         public int Counter { get; set; }
+        public override string ToString()
+        {
+            return "Counter: " + Counter;
+        }
     }
 
     public class TestInfoPayload
@@ -40,13 +44,12 @@ namespace AndroidSample
             {
                 _ably.Connect();
             });
+
             StopCommand = new Command(() =>  _ably.Close());
             var messageObserver = Observer.Create<Message>(m =>
             {
-                ReceivedMessage = m.ToString();
+                ReceivedMessage = "Received: " + m.ToString();
             });
-
-            string pingPongChannel = ably.ClientId + "-pp";
 
             var testObserver = Observer.Create<Message>(m =>
             {
@@ -91,7 +94,7 @@ namespace AndroidSample
             var observer = Observer.Create<PingPongPayload>(payload =>
             {
                 var newData = new PingPongPayload {Counter = payload.Counter + 1 };
-                SentMessage = "PingPong - Counter: " + newData.Counter;
+                SentMessage = "Sent: PingPong - Counter: " + newData.Counter;
                 _ably.SendMessage(testInfo.Channel, "PingPong", newData);
             });
 

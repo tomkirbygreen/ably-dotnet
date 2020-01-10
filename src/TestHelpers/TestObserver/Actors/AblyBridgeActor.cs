@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Reactive;
 using Akka.Actor;
 using Akka.Event;
+using Akka.Logger.Serilog;
 using IO.Ably;
 using TestObserver.Messages;
+using SerilogLoggingAdapter = Akka.Logger.Serilog.SerilogLoggingAdapter;
 
 namespace TestObserver.Actors
 {
@@ -16,7 +18,7 @@ namespace TestObserver.Actors
 
         public AblyBridgeActor(AblyService service, IActorRef clientActor, string channelName, bool includePresence = false)
         {
-            var logger = Context.GetLogger();
+            var logger = Context.GetLogger<SerilogLoggingAdapter>();
             _messageSubscriber = service.MessageObservable(channelName);
 
             var messageObserver = Observer.Create<Message>(m =>
@@ -42,7 +44,12 @@ namespace TestObserver.Actors
                 _presenceSubscriber.Subscribe(presenceObserver);
             }
 
-            Receive<SendMessage>(data => service.SendMessage(channelName, data.Name, data.Data));
+            Receive<SendMessage>(data =>
+            {
+                var channel = data.Channel ?? channelName;
+                logger.Info("Sending message {name},{data} to {channel}", data.Name, data.Data, channel);
+                service.SendMessage(channel, data.Name, data.Data);
+            });
             Receive<SubscribeToChannel>(data =>
                 {
                     var subscription = service.MessageObservable(data.ChannelName).Subscribe(messageObserver);

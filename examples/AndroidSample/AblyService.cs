@@ -7,6 +7,18 @@ using IO.Ably.Realtime;
 
 namespace AndroidSample
 {
+    public class LogMessage
+    {
+        public string Level { get; set; }
+        public string Message { get; set; }
+
+        public LogMessage(string message, string level)
+        {
+            Message = message;
+            Level = level;
+        }
+    }
+
     public class AblyService : IObservable<LogMessage>, IObservable<string>, ILoggerSink
     {
         public AblyRealtime Ably { get; private set; }
